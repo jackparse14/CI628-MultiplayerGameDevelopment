@@ -1,5 +1,5 @@
 #include "MyGame.h"
-//Lol
+
 void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
     if (cmd == "GAME_DATA") {
         // we should have exactly 4 arguments
