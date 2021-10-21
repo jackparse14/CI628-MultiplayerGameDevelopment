@@ -1,11 +1,12 @@
 #include "SDL_net.h"
-
 #include "MyGame.h"
 
 using namespace std;
 
 const char* IP_NAME = "localhost";
 const Uint16 PORT = 55555;
+
+
 
 bool is_running = true;
 
@@ -75,6 +76,8 @@ static int on_send(void* socket_ptr) {
     return 0;
 }
 
+
+
 void loop(SDL_Renderer* renderer) {
     SDL_Event event;
 
@@ -88,7 +91,6 @@ void loop(SDL_Renderer* renderer) {
                     case SDLK_ESCAPE:
                         is_running = false;
                         break;
-
                     default:
                         break;
                 }
@@ -116,7 +118,7 @@ int run_game() {
     SDL_Window* window = SDL_CreateWindow(
         "Multiplayer Pong Client",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        800, 600,
+        game->windowW, game->windowH,
         SDL_WINDOW_SHOWN
     );
 
@@ -131,11 +133,12 @@ int run_game() {
         std::cout << "Failed to create renderer" << SDL_GetError() << std::endl;
         return -1;
     }
-
+    game->load_media(renderer);
     loop(renderer);
 
     return 0;
 }
+
 
 int main(int argc, char** argv) {
 
