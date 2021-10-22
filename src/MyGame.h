@@ -65,6 +65,8 @@ class MyGame {
         void create_game_objects();
         const int windowW = 800;
         const int windowH = 600;
+        // FPS variables
+        
     private:
         Player player1;
         Player player2;
@@ -74,3 +76,5 @@ class MyGame {
         SDL_Texture* backgroundTexture;
         SDL_Texture* load_texture(SDL_Renderer* renderer, std::string path);
 };
+
+#endif

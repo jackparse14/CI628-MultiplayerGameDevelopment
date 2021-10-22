@@ -80,8 +80,14 @@ static int on_send(void* socket_ptr) {
 
 void loop(SDL_Renderer* renderer) {
     SDL_Event event;
+    Uint32 frameStart;
+    int frameTime;
 
     while (is_running) {
+        const int targetFPS = 60;
+        const int frameDelay = 1000 / targetFPS; // Maximum time between frames
+        //  Start counting how long game has been running
+         frameStart= SDL_GetTicks();
         // input
         while (SDL_PollEvent(&event)) {
             if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.repeat == 0) {
@@ -110,7 +116,14 @@ void loop(SDL_Renderer* renderer) {
 
         SDL_RenderPresent(renderer);
 
-        SDL_Delay(17);
+        // How long it took to compute the frame (1 loop)
+        frameTime = SDL_GetTicks() - frameStart;
+
+        if (frameDelay > frameTime) {
+            SDL_Delay(frameDelay - frameTime);
+        }
+
+        //SDL_Delay(17);
     }
 }
 
