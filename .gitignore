@@ -36,3 +36,16 @@ build/CMakeFiles/
 build/Debug/
 build/MyGame.dir/
 build/x64/
+build/.vs/MyGame/v16/.suo
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.ipch
+*.vcxproj
+*.filters
+*.user
+build/CI628-MultiplayerGameDevelopment/
+*.cmake
+build/CMakeCache.txt
+*.sln
