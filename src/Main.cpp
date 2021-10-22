@@ -88,11 +88,11 @@ void loop(SDL_Renderer* renderer) {
                 game->input(event);
 
                 switch (event.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        is_running = false;
-                        break;
-                    default:
-                        break;
+                case SDLK_ESCAPE:
+                    is_running = false;
+                    break;
+                default:
+                    break;
                 }
             }
 
@@ -134,6 +134,7 @@ int run_game() {
         return -1;
     }
     game->load_media(renderer);
+    game->create_game_objects();
     loop(renderer);
 
     return 0;
@@ -162,7 +163,7 @@ int main(int argc, char** argv) {
         exit(3);
     }
 
-    // Open the connection to the server
+    // Open the  connection to the server
     TCPsocket socket = SDLNet_TCP_Open(&ip);
 
     if (!socket) {
