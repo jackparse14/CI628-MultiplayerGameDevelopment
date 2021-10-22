@@ -1,5 +1,6 @@
 #include "MyGame.h"
-#include "SDL_image.h"
+//#include "SDL_image.h"
+#include "TextureLoader.h"
 
 void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
     if (cmd == "GAME_DATA") {
@@ -21,16 +22,7 @@ void MyGame::send(std::string message) {
 }
 
 SDL_Texture* MyGame::load_texture(SDL_Renderer* renderer, std::string path) {
-    SDL_Surface* loadedSurface = IMG_Load(path.c_str());
-    if (loadedSurface == nullptr) {
-        printf("SDL_Image Error: %s\n", IMG_GetError());
-    }
-    SDL_Texture* newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-    if (newTexture == nullptr) {
-        printf("SDL_Texture Error: %s\n", SDL_GetError());
-    }
-    SDL_FreeSurface(loadedSurface);
-    return newTexture;
+    
 };
 
 void MyGame::load_media(SDL_Renderer* renderer) {
