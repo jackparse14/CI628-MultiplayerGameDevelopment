@@ -1,5 +1,4 @@
 #include "MyGame.h"
-//#include "SDL_image.h"
 #include "TextureLoader.h"
 
 void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
@@ -21,12 +20,8 @@ void MyGame::send(std::string message) {
     messages.push_back(message);
 }
 
-SDL_Texture* MyGame::load_texture(SDL_Renderer* renderer, std::string path) {
-    
-};
-
 void MyGame::load_media(SDL_Renderer* renderer) {
-    backgroundTexture = load_texture(renderer, "Assets/Images/PongBackground.bmp");
+    backgroundTexture = TextureLoader::load_texture(renderer, "Assets/Images/PongBackground.bmp");
     if (backgroundTexture == nullptr) {
         printf("Failed to load BackgroundTexture \n");
     }

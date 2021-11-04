@@ -74,7 +74,6 @@ class MyGame {
         //SDL_Rect player2 = { ((windowW / 4) * 3) - 20, 0, 20, 60 };
         SDL_Rect ball = { 0,0,10,10 };
         SDL_Texture* backgroundTexture;
-        SDL_Texture* load_texture(SDL_Renderer* renderer, std::string path);
 };
 
 #endif
