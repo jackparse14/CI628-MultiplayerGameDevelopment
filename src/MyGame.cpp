@@ -21,7 +21,7 @@ void MyGame::send(std::string message) {
 }
 
 void MyGame::load_media(SDL_Renderer* renderer) {
-    backgroundTexture = TextureLoader::load_texture(renderer, "Assets/Images/PongBackground.bmp");
+    backgroundTexture = TextureLoader::load_texture(renderer, "/CI628/src/Assets/Images/PongBackground.bmp");
     if (backgroundTexture == nullptr) {
         printf("Failed to load BackgroundTexture \n");
     }
@@ -46,8 +46,6 @@ void MyGame::input(SDL_Event& event) {
 void MyGame::update() {
     player1.update_y_position(game_data.player1Y);
     player2.update_y_position(game_data.player2Y);
-    //player1.y = game_data.player1Y;
-    //player2.y = game_data.player2Y;
     ball.y = game_data.ballY;
     ball.x = game_data.ballX;
 }
