@@ -2,13 +2,16 @@
 #define __PLAYER_H__
 
 #include "GameObject.h"
-#include <SDL_rect.h>
 
 class Player : public GameObject {
 public:
-    void set_rect(int x, int y, int w, int h);
+    void create_player(int x, int y);
     void update_y_position(int y);
-    SDL_Rect rect;
+private:
+    int startingY = 0;
+    int startingX = 0;
+    int width = 20;
+    int height = 60;
 };
 
 #endif

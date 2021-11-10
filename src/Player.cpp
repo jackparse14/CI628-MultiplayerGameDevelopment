@@ -1,11 +1,9 @@
 #include "player.h"
 
-void Player::set_rect(int x, int y, int w, int h) {
-    set_height(h);
-    set_width(w);
-    set_y_position(y);
+void Player::create_player(int x, int y) {
     set_x_position(x);
-    rect = { this->positionX,this->positionY,width,height };
+    set_y_position(y);
+    set_rect(width,height);
 }
 
 void Player::update_y_position(int y) {
