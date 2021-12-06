@@ -4,14 +4,16 @@
 #include "GameObject.h"
 
 class Player : public GameObject {
-public:
-    void create_player(int x, int y);
-    void update_y_position(int y);
 private:
-    int startingY = 0;
-    int startingX = 0;
-    int width = 20;
-    int height = 60;
+    void flip_player();
+public:
+    Player(SDL_Renderer* renderer, std::string path, bool isRightPlayer) : GameObject(renderer, path) {
+        width = 20;
+        height = 60;
+        if (isRightPlayer) {
+            flip_player();
+        }
+    };
 };
 
 #endif

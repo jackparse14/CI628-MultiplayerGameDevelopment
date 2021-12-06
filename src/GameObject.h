@@ -6,15 +6,20 @@
 
 class GameObject {
 public:
+    //  Constructor
     GameObject(SDL_Renderer* renderer, std::string path);
-    void set_x_position(int x);
+    //  Destructor
+    //~GameObject();
     void set_y_position(int y);
-    void set_rect(int w, int h);
-    void update();
+    void set_rect(int x,int y);
     void render();
+    
 protected:
-    int positionY;
-    int positionX;
+    int xPosition = NULL;
+    int yPosition = NULL;
+    int width = NULL;
+    int height = NULL;
+    SDL_RendererFlip flipType = SDL_FLIP_NONE;
     SDL_Rect rect;
     SDL_Renderer* renderer;
     SDL_Texture* objectTexture;

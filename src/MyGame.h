@@ -6,6 +6,8 @@
 #include <string>
 #include "Player.h"
 #include "SDL.h"
+#include "Ball.h"
+#include "DoubleBall.h"
 
 static struct GameData {
     int player1Y = 0;
@@ -29,9 +31,11 @@ public:
     // FPS variables
 
 private:
-    Player player1;
-    Player player2;
-    SDL_Rect ball = { 0,0,10,10 };
+    Player* player1;
+    Player* player2;
+    Ball* ball;
+    //Power Ups
+    DoubleBall* doubleBall;
     SDL_Texture* backgroundTexture;
 };
 

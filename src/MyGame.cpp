@@ -21,15 +21,19 @@ void MyGame::send(std::string message) {
 }
 
 void MyGame::load_media(SDL_Renderer* renderer) {
-    backgroundTexture = TextureLoader::load_texture(renderer, "/CI628/src/Assets/Images/PongBackground.bmp");
+    backgroundTexture = TextureLoader::load_texture(renderer, "../src/Assets/Images/PongBackground.bmp");
     if (backgroundTexture == nullptr) {
         printf("Failed to load BackgroundTexture \n");
     }
+    player1 = new Player(renderer, "../src/Assets/Images/PongBat.bmp", false);
+    player2 = new Player(renderer, "../src/Assets/Images/PongBat.bmp", true);
+    ball = new Ball(renderer, "../src/Assets/Images/Ball.bmp");
 }
 
 void MyGame::create_game_objects() {
-    player1.set_rect((windowW / 4), 0, 20, 60);
-    player2.set_rect(((windowW / 4) * 3) - 20, 0, 20, 60);
+    player1->set_rect((windowW / 4), 0);
+    player2->set_rect(((windowW / 4) * 3) - 20, 0);
+    ball->set_rect(0,0);
 }
 
 void MyGame::input(SDL_Event& event) {
@@ -44,10 +48,10 @@ void MyGame::input(SDL_Event& event) {
 }
 
 void MyGame::update() {
-    player1.update_y_position(game_data.player1Y);
-    player2.update_y_position(game_data.player2Y);
-    ball.y = game_data.ballY;
-    ball.x = game_data.ballX;
+    player1->set_y_position(game_data.player1Y);
+    player2->set_y_position(game_data.player2Y);
+    ball->set_y_position(game_data.ballY);
+    ball->set_x_position(game_data.ballX);
 }
 
 void MyGame::render(SDL_Renderer* renderer) {
@@ -56,9 +60,11 @@ void MyGame::render(SDL_Renderer* renderer) {
     // Render Players
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 200);
-    SDL_RenderFillRect(renderer, &player1.rect);
-    SDL_RenderFillRect(renderer, &player2.rect);
+    player1->render();
+    player2->render();
+    //SDL_RenderFillRect(renderer, &player1.rect);
+    //SDL_RenderFillRect(renderer, &player2.rect);
     // Render Ball
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderFillRect(renderer, &ball);
+    //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    ball->render();
 }

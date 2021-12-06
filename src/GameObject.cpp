@@ -4,22 +4,19 @@
 GameObject::GameObject(SDL_Renderer* render, std::string texturePath) {
 	renderer = render;
 	objectTexture = TextureLoader::load_texture(renderer, texturePath);
-}
-
-void GameObject::set_x_position(int x) {
-	positionX = x;
+	if (objectTexture == nullptr) {
+		printf("Failed to load objectTexture \n");
+	}
 }
 void GameObject::set_y_position(int y) {
-	positionY = y;
+	yPosition = y;
+	rect.y = yPosition;
 }
-
-void GameObject::set_rect(int w, int h) {
-	rect = {positionX,positionY,w,h};
-}
-
-void GameObject::update() {	
-
+void GameObject::set_rect(int x, int y) {
+	xPosition = x;
+	yPosition = y;
+	rect = {x,y,width,height};
 }
 void GameObject::render() {
-
-}
+	SDL_RenderCopyEx(renderer, objectTexture, NULL, &rect,NULL,NULL, flipType);
+}  
