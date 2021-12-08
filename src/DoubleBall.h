@@ -4,6 +4,7 @@
 #include "PowerUp.h"
 
 class DoubleBall : public PowerUp {
+	using PowerUp::PowerUp;
 public:
 private:
 };

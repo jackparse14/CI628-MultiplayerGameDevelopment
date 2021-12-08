@@ -1,5 +1,6 @@
 #include "MyGame.h"
 #include "TextureLoader.h"
+#include "ctime"
 
 void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
     if (cmd == "GAME_DATA") {
@@ -28,6 +29,8 @@ void MyGame::load_media(SDL_Renderer* renderer) {
     player1 = new Player(renderer, "../src/Assets/Images/PongBat.bmp", false);
     player2 = new Player(renderer, "../src/Assets/Images/PongBat.bmp", true);
     ball = new Ball(renderer, "../src/Assets/Images/Ball.bmp");
+    srand((unsigned)time(0));
+    doubleBall = new DoubleBall(renderer, "../src/Assets/Images/DoubleBallPowerUp.png");
 }
 
 void MyGame::create_game_objects() {
@@ -52,6 +55,7 @@ void MyGame::update() {
     player2->set_y_position(game_data.player2Y);
     ball->set_y_position(game_data.ballY);
     ball->set_x_position(game_data.ballX);
+    doubleBall->update();
 }
 
 void MyGame::render(SDL_Renderer* renderer) {
@@ -67,4 +71,5 @@ void MyGame::render(SDL_Renderer* renderer) {
     // Render Ball
     //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     ball->render();
+    doubleBall->render();
 }

@@ -5,11 +5,20 @@
 
 class PowerUp : public GameObject {
 public:
+	PowerUp(SDL_Renderer* renderer, std::string path) : GameObject(renderer, path) {
+		width = 15;
+		height = 15;
+	};
+	void spawnPowerUp();
+	void update();
 private:
 	Uint32 startTime;
 	Uint32 runningTime;
+	Uint32 spawnDelay = 1000;
 	void start_timer();
-	void update();
+	int randomNumberGen(int min,int max);
+	bool isVisible = false;
+	void despawnPowerUp();
 };
 
 #endif
