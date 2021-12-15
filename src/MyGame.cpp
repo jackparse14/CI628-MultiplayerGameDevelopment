@@ -1,6 +1,6 @@
 #include "MyGame.h"
-#include "TextureLoader.h"
 #include "ctime"
+
 
 void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
     if (cmd == "GAME_DATA") {
@@ -22,7 +22,8 @@ void MyGame::send(std::string message) {
 }
 
 void MyGame::load_media(SDL_Renderer* renderer) {
-    backgroundTexture = TextureLoader::load_texture(renderer, "../src/Assets/Images/PongBackground.bmp");
+    textureLoader = new TextureLoader();
+    backgroundTexture = textureLoader->load_texture(renderer, "../src/Assets/Images/PongBackground.bmp");
     if (backgroundTexture == nullptr) {
         printf("Failed to load BackgroundTexture \n");
     }
@@ -35,6 +36,9 @@ void MyGame::load_media(SDL_Renderer* renderer) {
     srand((unsigned)time(0));
     doubleBall = new DoubleBall(renderer, "../src/Assets/Images/DoubleBallPowerUp.png");
     plusOneBall = new PlusOneBall(renderer, "../src/Assets/Images/PlusOneBallPowerUp.png");
+    fontLoader = new FontLoader();
+    scoreFont = fontLoader->load_font("../src/Assets/Fonts/Gameplay.ttf",10);
+
 }
 
 

@@ -9,6 +9,8 @@
 #include "Ball.h"
 #include "DoubleBall.h"
 #include "PlusOneBall.h"
+#include "FontLoader.h"
+#include "TextureLoader.h"
 
 static struct GameData {
     int player1Y = 0;
@@ -42,7 +44,12 @@ private:
     //Power Ups
     DoubleBall* doubleBall;
     PlusOneBall* plusOneBall;
+
+    TextureLoader* textureLoader;
     SDL_Texture* backgroundTexture;
+
+    FontLoader* fontLoader;
+    TTF_Font* scoreFont;
 };
 
 #endif
