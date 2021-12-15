@@ -20,3 +20,9 @@ void GameObject::set_rect(int x, int y) {
 void GameObject::render() {
 	SDL_RenderCopyEx(renderer, objectTexture, NULL, &rect,NULL,NULL, flipType);
 }  
+int GameObject::get_x_position() {
+	return xPosition;
+}
+int GameObject::get_y_position() {
+	return yPosition;
+}

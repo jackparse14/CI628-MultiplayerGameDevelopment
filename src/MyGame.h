@@ -8,12 +8,15 @@
 #include "SDL.h"
 #include "Ball.h"
 #include "DoubleBall.h"
+#include "PlusOneBall.h"
 
 static struct GameData {
     int player1Y = 0;
     int player2Y = 0;
     int ballX = 0;
     int ballY = 0;
+    int numBalls = 1;
+    std::vector<Ball*> balls;
 } game_data;
 
 class MyGame {
@@ -28,14 +31,17 @@ public:
     void create_game_objects();
     const int windowW = 800;
     const int windowH = 600;
+    
     // FPS variables
 
 private:
     Player* player1;
     Player* player2;
+    
     Ball* ball;
     //Power Ups
     DoubleBall* doubleBall;
+    PlusOneBall* plusOneBall;
     SDL_Texture* backgroundTexture;
 };
 

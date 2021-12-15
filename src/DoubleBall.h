@@ -7,6 +7,7 @@ class DoubleBall : public PowerUp {
 	using PowerUp::PowerUp;
 public:
 private:
+	void double_balls(int no_balls);
 };
 
 #endif

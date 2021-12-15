@@ -10,6 +10,7 @@ public:
 		height = 10;
 	};
 	void set_x_position(int x);
+	
 };
 
 #endif

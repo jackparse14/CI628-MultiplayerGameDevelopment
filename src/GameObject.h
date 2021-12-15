@@ -13,12 +13,13 @@ public:
     void set_y_position(int y);
     void set_rect(int x,int y);
     void render();
-    
+    int width = NULL;
+    int height = NULL;
+    int get_x_position();
+    int get_y_position();
 protected:
     int xPosition = NULL;
     int yPosition = NULL;
-    int width = NULL;
-    int height = NULL;
     SDL_RendererFlip flipType = SDL_FLIP_NONE;
     SDL_Rect rect;
     SDL_Renderer* renderer;
