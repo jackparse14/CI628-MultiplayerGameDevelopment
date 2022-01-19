@@ -3,8 +3,6 @@
 
 #include "PowerUp.h"
 
-#include <vector>
-
 class PlusOneBall : public PowerUp {
 	using PowerUp::PowerUp;
 public:

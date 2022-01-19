@@ -1,15 +1,37 @@
 #include "MyGame.h"
 #include "ctime"
 
+void MyGame::init_audio() {
+    // open 44.1KHz, 
+    // signed 16bit
+    // system byte order, 
+    // stereo audio,
+    // using 1024 byte chunks
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+        printf("Mix_OpenAudio: %s\n", Mix_GetError());
+        return;
+    }
 
+    // all good to go
+    sound = Mix_LoadWAV("drop.wav");
+    if (sound == nullptr) {
+        printf("Mix_LoadWAV: %s\n", Mix_GetError());
+    }
+    else {
+        std::cout << "Sound effect loaded" << std::endl;
+    }
+}
 void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
     if (cmd == "GAME_DATA") {
         // we should have exactly 4 arguments
-        if (args.size() == 4) {
+        //  NEED TO CHANGE NUMBALLS WHEN WE ADD MORE ARGUMENTS/SPAWN BALLS
+        if (args.size() == (2+(game_data.numBalls*2))) {
             game_data.player1Y = stoi(args.at(0));
             game_data.player2Y = stoi(args.at(1));
-            game_data.ballX = stoi(args.at(2));
-            game_data.ballY = stoi(args.at(3));
+            for (int it = 0; it < game_data.numBalls; it++) {
+                game_data.ballsPos[it][0] = stoi(args.at(it + 2));
+                game_data.ballsPos[it][1] = stoi(args.at(it + 3));
+            }
         }
     }
     else {
@@ -36,8 +58,8 @@ void MyGame::load_media(SDL_Renderer* renderer) {
     srand((unsigned)time(0));
     doubleBall = new DoubleBall(renderer, "../src/Assets/Images/DoubleBallPowerUp.png");
     plusOneBall = new PlusOneBall(renderer, "../src/Assets/Images/PlusOneBallPowerUp.png");
-    fontLoader = new FontLoader();
-    scoreFont = fontLoader->load_font("../src/Assets/Fonts/Gameplay.ttf",10);
+    //fontLoader = new FontLoader();
+    //scoreFont = fontLoader->load_font("../src/Assets/Fonts/Gameplay.ttf",10);
 
 }
 
@@ -45,8 +67,9 @@ void MyGame::load_media(SDL_Renderer* renderer) {
 void MyGame::create_game_objects() {
     player1->set_rect((windowW / 4), 0);
     player2->set_rect(((windowW / 4) * 3) - 20, 0);
+
     game_data.balls[0]->set_rect(0,0);
-    game_data.balls[1]->set_rect(0,0);
+
     doubleBall->start_timer();
     plusOneBall->start_timer();
 }
@@ -59,20 +82,21 @@ void MyGame::input(SDL_Event& event) {
     case SDLK_s:
         send(event.type == SDL_KEYDOWN ? "S_DOWN" : "S_UP");
         break;
+    case SDLK_f:
+        play_sound();
+        break;
     }
 }
 
 void MyGame::update() {
     player1->set_y_position(game_data.player1Y);
     player2->set_y_position(game_data.player2Y);
-    game_data.balls[0]->set_y_position(game_data.ballY);
-    game_data.balls[0]->set_x_position(game_data.ballX);
-    game_data.balls[1]->set_y_position(game_data.ballY + 50);
-    game_data.balls[1]->set_x_position(game_data.ballX + 50);
     
     std::vector<GameObject*> gameObjects;
 
     for (int it = 0; it < game_data.balls.size() ; ++it) {
+        game_data.balls[it]->set_y_position(game_data.ballsPos[it][1]);
+        game_data.balls[it]->set_x_position(game_data.ballsPos[it][0]);
         gameObjects.push_back(game_data.balls[it]);
     };
     doubleBall->updatePowerUp(gameObjects);
@@ -91,8 +115,22 @@ void MyGame::render(SDL_Renderer* renderer) {
     //SDL_RenderFillRect(renderer, &player2.rect);
     // Render Ball
     //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    game_data.balls[0]->render();
-    game_data.balls[1]->render();
+    for (int it = 0; it < game_data.balls.size(); it++) {
+        game_data.balls[it]->render();
+    }
     doubleBall->render();
     plusOneBall->render();
+}
+
+void MyGame::play_sound() {
+    if (Mix_PlayChannel(-1, sound, 0) == -1) {
+        printf("Error playing sound. Mix_PlayChannel: %s\n", Mix_GetError());
+    }
+}
+
+void MyGame::destroy() {
+    Mix_FreeChunk(sound);
+    sound = nullptr;
+
+    Mix_CloseAudio();
 }

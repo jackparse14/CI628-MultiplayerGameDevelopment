@@ -86,7 +86,6 @@ void loop(SDL_Renderer* renderer) {
         while (SDL_PollEvent(&event)) {
             if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.repeat == 0) {
                 game->input(event);
-
                 switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE:
                     is_running = false;
@@ -135,6 +134,7 @@ int run_game() {
     }
     game->load_media(renderer);
     game->create_game_objects();
+    game->init_audio();
     loop(renderer);
 
     return 0;
@@ -168,7 +168,7 @@ int main(int argc, char** argv) {
 
     if (!socket) {
         printf("SDLNet_TCP_Open: %s\n", SDLNet_GetError());
-        exit(4);
+        exit(4);    
     }
 
     SDL_CreateThread(on_receive, "ConnectionReceiveThread", (void*)socket);

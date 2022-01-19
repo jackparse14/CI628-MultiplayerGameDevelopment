@@ -11,13 +11,17 @@
 #include "PlusOneBall.h"
 #include "FontLoader.h"
 #include "TextureLoader.h"
+#include "SDL_mixer.h"
 
 static struct GameData {
     int player1Y = 0;
     int player2Y = 0;
     int ballX = 0;
     int ballY = 0;
+    int ball2X = 0;
+    int ball2Y = 0;
     int numBalls = 1;
+    double ballsPos[1][2];
     std::vector<Ball*> balls;
 } game_data;
 
@@ -40,6 +44,7 @@ private:
     Player* player1;
     Player* player2;
     
+    Mix_Chunk* sound;
     Ball* ball;
     //Power Ups
     DoubleBall* doubleBall;
@@ -50,6 +55,10 @@ private:
 
     FontLoader* fontLoader;
     TTF_Font* scoreFont;
+
+    void init_audio();
+    void play_sound();
+    void destroy();
 };
 
 #endif
