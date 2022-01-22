@@ -1,7 +1,7 @@
 #include "MyGame.h"
 #include "ctime"
 
-void MyGame::init_audio() {
+/*void MyGame::init_audio() {
     // open 44.1KHz, 
     // signed 16bit
     // system byte order, 
@@ -20,11 +20,9 @@ void MyGame::init_audio() {
     else {
         std::cout << "Sound effect loaded" << std::endl;
     }
-}
+}*/
 void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
     if (cmd == "GAME_DATA") {
-        // we should have exactly 4 arguments
-        //  NEED TO CHANGE NUMBALLS WHEN WE ADD MORE ARGUMENTS/SPAWN BALLS
         if (args.size() == (2+(game_data.numBalls*2))) {
             game_data.player1Y = stoi(args.at(0));
             game_data.player2Y = stoi(args.at(1));
@@ -34,7 +32,11 @@ void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
             }
         }
     }
-    else {
+    else if (cmd == "PLAYERNUM") {
+        if (clientID == 0) {
+            clientID = stoi(args.at(0));
+        }
+    } else {
         std::cout << "Received: " << cmd << std::endl;
     }
 }
@@ -77,13 +79,31 @@ void MyGame::create_game_objects() {
 void MyGame::input(SDL_Event& event) {
     switch (event.key.keysym.sym) {
     case SDLK_w:
-        send(event.type == SDL_KEYDOWN ? "W_DOWN" : "W_UP");
-        break;
+        if (clientID == 1) {
+            send(event.type == SDL_KEYDOWN ? "W_DOWN" : "W_UP");
+            break;
+        }
+        else if (clientID == 2) {
+            send(event.type == SDL_KEYDOWN ? "I_DOWN" : "I_UP");
+            break;
+        }
+        else {
+            break;
+        }
     case SDLK_s:
-        send(event.type == SDL_KEYDOWN ? "S_DOWN" : "S_UP");
+        if (clientID == 1) {
+            send(event.type == SDL_KEYDOWN ? "S_DOWN" : "S_UP");
+            break;
+        }
+        else if (clientID == 2) {
+        send(event.type == SDL_KEYDOWN ? "K_DOWN" : "K_UP");
         break;
+        }
+        else {
+        break;
+        }
     case SDLK_f:
-        play_sound();
+        //play_sound();
         break;
     }
 }
@@ -122,7 +142,7 @@ void MyGame::render(SDL_Renderer* renderer) {
     plusOneBall->render();
 }
 
-void MyGame::play_sound() {
+/*void MyGame::play_sound() {
     if (Mix_PlayChannel(-1, sound, 0) == -1) {
         printf("Error playing sound. Mix_PlayChannel: %s\n", Mix_GetError());
     }
@@ -133,4 +153,4 @@ void MyGame::destroy() {
     sound = nullptr;
 
     Mix_CloseAudio();
-}
+}*/

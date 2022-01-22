@@ -134,7 +134,7 @@ int run_game() {
     }
     game->load_media(renderer);
     game->create_game_objects();
-    game->init_audio();
+    //game->init_audio();
     loop(renderer);
 
     return 0;
@@ -154,7 +154,7 @@ int main(int argc, char** argv) {
         printf("SDLNet_Init: %s\n", SDLNet_GetError());
         exit(2);
     }
-
+    
     IPaddress ip;
 
     // Resolve host (ip name + port) into an IPaddress type
@@ -169,8 +169,10 @@ int main(int argc, char** argv) {
     if (!socket) {
         printf("SDLNet_TCP_Open: %s\n", SDLNet_GetError());
         exit(4);    
-    }
+    }   
 
+    int clientId = 0;
+    int numPlayers = 0;
     SDL_CreateThread(on_receive, "ConnectionReceiveThread", (void*)socket);
     SDL_CreateThread(on_send, "ConnectionSendThread", (void*)socket);
 

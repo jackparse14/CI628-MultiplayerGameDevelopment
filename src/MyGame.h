@@ -43,7 +43,7 @@ public:
 private:
     Player* player1;
     Player* player2;
-    
+    int clientID = 0;
     Mix_Chunk* sound;
     Ball* ball;
     //Power Ups
@@ -56,9 +56,9 @@ private:
     FontLoader* fontLoader;
     TTF_Font* scoreFont;
 
-    void init_audio();
+    /*void init_audio();
     void play_sound();
-    void destroy();
+    void destroy();*/
 };
 
 #endif
