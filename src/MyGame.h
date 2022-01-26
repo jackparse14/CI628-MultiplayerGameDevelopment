@@ -11,6 +11,7 @@
 #include "FontLoader.h"
 #include "TextureLoader.h"
 #include "SDL_mixer.h"
+#include "Score.h"
 
 static struct GameData {
     int player1Y = 0;
@@ -19,7 +20,6 @@ static struct GameData {
     int powerUpY = 0;
     int powerUpNum = 0;
     int numBalls = 0;
-    //double ballsPos[10][2];
     double ballsPosX[10];
     double ballsPosY[10];
     std::vector<Ball*> balls;
@@ -37,11 +37,13 @@ public:
     void spawn_ball(SDL_Renderer* renderer);
     void despawn_ball();
     void choose_power_up();
+    void update_scores();
     void spawn_power_up(std::string path);
     void create_game_objects();
     const int windowW = 800;
     const int windowH = 600;
-    
+    void init_audio();
+    void destroy();
     // FPS variables
 
 private:
@@ -49,8 +51,14 @@ private:
     std::vector<GameObject*> gameObjects;
     Player* player1;
     Player* player2;
+    Score* player1Score;
+    Score* player2Score;
     int clientID = 0;
-    Mix_Chunk* sound;
+    int numPlayers = 0;
+    Mix_Chunk* hitwall_sound;
+    Mix_Chunk* hitpowerup_sound;
+    Mix_Chunk* newpowerup_sound;
+    Mix_Chunk* hitplayer_sound;
     Ball* ball;
     //Power Ups
     PowerUp* powerUp;
@@ -60,10 +68,11 @@ private:
 
     FontLoader* fontLoader;
     TTF_Font* scoreFont;
-
-    /*void init_audio();
-    void play_sound();
-    void destroy();*/
+    SDL_Texture* player1ScoreTexture;
+    SDL_Texture* player2ScoreTexture;
+    
+    void play_sound(Mix_Chunk* sound);
+    
 };
 
 #endif

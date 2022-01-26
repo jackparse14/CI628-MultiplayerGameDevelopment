@@ -1,7 +1,7 @@
 #include "MyGame.h"
 #include "ctime"
 
-/*void MyGame::init_audio() {
+void MyGame::init_audio() {
     // open 44.1KHz, 
     // signed 16bit
     // system byte order, 
@@ -13,14 +13,36 @@
     }
 
     // all good to go
-    sound = Mix_LoadWAV("drop.wav");
-    if (sound == nullptr) {
+    hitwall_sound = Mix_LoadWAV("../src/Assets/Audio/hitwall.wav");
+    if (hitwall_sound == nullptr) {
         printf("Mix_LoadWAV: %s\n", Mix_GetError());
     }
     else {
         std::cout << "Sound effect loaded" << std::endl;
     }
-}*/
+    hitpowerup_sound = Mix_LoadWAV("../src/Assets/Audio/hitpowerup.wav");   
+    if (hitpowerup_sound == nullptr) {
+        printf("Mix_LoadWAV: %s\n", Mix_GetError());
+    }
+    else {
+        std::cout << "Sound effect loaded" << std::endl;
+    }
+    hitplayer_sound = Mix_LoadWAV("../src/Assets/Audio/hitplayer.wav");
+    if (hitplayer_sound == nullptr) {
+        printf("Mix_LoadWAV: %s\n", Mix_GetError());
+    }
+    else {
+        std::cout << "Sound effect loaded" << std::endl;
+    }
+    newpowerup_sound = Mix_LoadWAV("../src/Assets/Audio/newpowerup.wav");
+    if (newpowerup_sound == nullptr) {
+        printf("Mix_LoadWAV: %s\n", Mix_GetError());
+    }
+    else {
+        std::cout << "Sound effect loaded" << std::endl;
+    }
+    Mix_Volume(-1, 2);
+}
 void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
     if (cmd == "GAME_DATA") {
         game_data.numBalls = stoi(args.at(0));
@@ -38,8 +60,17 @@ void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
         }
     }
     else if (cmd == "PLAYERNUM") {
-        if (clientID == 0) {
-            clientID = stoi(args.at(0));
+        numPlayers = stoi(args.at(0));
+        if (numPlayers == 1) {
+            clientID = 1;
+        }
+        else if (numPlayers == 2) {
+            if (clientID == 0) {
+                clientID = 2;
+            }
+        }
+        else {
+            std::cout << "TWO PLAYERS ALREADY IN GAME" << std::endl;
         }
     }
     else if (cmd == "POWER_UP") {
@@ -47,9 +78,28 @@ void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
             game_data.powerUpX = stoi(args.at(0));
             game_data.powerUpY = stoi(args.at(1));
             game_data.powerUpNum = stoi(args.at(2));
-            std::cout << game_data.powerUpNum << std::endl;
+            if (game_data.powerUpNum == 4) {
+                play_sound(hitpowerup_sound);
+            }
+            else {
+                play_sound(newpowerup_sound);
+            }
         }
-    } else {
+    }
+    else if (cmd == "SCORES") {
+        if (args.size() == 2) {
+            player1Score->score = args.at(0);
+            player2Score->score = args.at(1);
+            play_sound(hitwall_sound);
+        }
+    }
+    else if (cmd == "HIT_WALL_UP" || cmd == "HIT_WALL_DOWN") {
+        play_sound(hitwall_sound);
+    }
+    else if (cmd == "BALL_HIT_BAT1" || cmd == "BALL_HIT_BAT2") {
+        play_sound(hitplayer_sound);
+    }
+    else {
         std::cout << "Received: " << cmd << std::endl;
     }
 }
@@ -57,7 +107,11 @@ void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
 void MyGame::send(std::string message) {
     messages.push_back(message);
 }
+void MyGame::update_scores() {
+    player1ScoreTexture = fontLoader->load_font_texture(rend, player1Score->score, player1Score->color, scoreFont, 10, 10);
+    player2ScoreTexture = fontLoader->load_font_texture(rend, player2Score->score, player1Score->color, scoreFont, 10, 10);
 
+}
 void MyGame::load_media(SDL_Renderer* renderer) {
     rend = renderer;
     textureLoader = new TextureLoader();
@@ -65,14 +119,19 @@ void MyGame::load_media(SDL_Renderer* renderer) {
     if (backgroundTexture == nullptr) {
         printf("Failed to load BackgroundTexture \n");
     }
+    fontLoader = new FontLoader();
+    player1Score = new Score(false);
+    player2Score = new Score(true);
+    scoreFont = fontLoader->load_font("../src/Assets/Fonts/Gameplay.ttf", 100);
+    player1ScoreTexture = fontLoader->load_font_texture(renderer,"0", player1Score->color,scoreFont,10,10);
+    player2ScoreTexture = fontLoader->load_font_texture(renderer, "0", player2Score->color, scoreFont, 10, 10);
+    
     player1 = new Player(renderer, "../src/Assets/Images/PongBat.bmp", false);
     player2 = new Player(renderer, "../src/Assets/Images/PongBat.bmp", true);
     powerUp = new PowerUp(rend, "");
     game_data.powerUpNum = 4;
     send("NO_POWERUP");
     srand((unsigned)time(0));
-    //fontLoader = new FontLoader();
-    //scoreFont = fontLoader->load_font("../src/Assets/Fonts/Gameplay.ttf",10);
 
 }
 void MyGame::spawn_ball(SDL_Renderer* renderer) {
@@ -119,15 +178,12 @@ void MyGame::input(SDL_Event& event) {
             break;
         }
         else if (clientID == 2) {
-        send(event.type == SDL_KEYDOWN ? "K_DOWN" : "K_UP");
+            send(event.type == SDL_KEYDOWN ? "K_DOWN" : "K_UP");
         break;
         }
         else {
-        break;
+            break;
         }
-    case SDLK_f:
-        //play_sound();
-        break;
     }
 }
 void MyGame::choose_power_up() {
@@ -146,7 +202,6 @@ void MyGame::choose_power_up() {
     else {
         powerUp->set_width_height(0, 0);
         powerUp->set_rect(0, 0);
-        std::cout << "delete powerUp" << std::endl;
     }
 }
 void MyGame::spawn_power_up(std::string path) {
@@ -167,6 +222,7 @@ void MyGame::update() {
         
     };
        choose_power_up();
+       update_scores();
 }
 
 void MyGame::render(SDL_Renderer* renderer) {
@@ -185,18 +241,24 @@ void MyGame::render(SDL_Renderer* renderer) {
         game_data.balls[it]->render();
     }
         powerUp->render();
-    
+        SDL_RenderCopy(renderer,player1ScoreTexture, nullptr,&player1Score->rect);
+        SDL_RenderCopy(renderer, player2ScoreTexture, nullptr, &player2Score->rect);
 }
 
-/*void MyGame::play_sound() {
+void MyGame::play_sound(Mix_Chunk* sound) {
     if (Mix_PlayChannel(-1, sound, 0) == -1) {
         printf("Error playing sound. Mix_PlayChannel: %s\n", Mix_GetError());
     }
 }
 
 void MyGame::destroy() {
-    Mix_FreeChunk(sound);
-    sound = nullptr;
-
+    Mix_FreeChunk(hitplayer_sound);
+    hitplayer_sound = nullptr;
+    Mix_FreeChunk(hitpowerup_sound);
+    hitpowerup_sound = nullptr;
+    Mix_FreeChunk(newpowerup_sound);
+    newpowerup_sound = nullptr;
+    Mix_FreeChunk(hitwall_sound);
+    hitwall_sound = nullptr;
     Mix_CloseAudio();
-}*/
+}
