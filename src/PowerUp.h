@@ -10,12 +10,14 @@ public:
 		width = 45;
 		height = 45;
 	};
+	void set_width_height(int w, int h);
+	/*
 	void spawnPowerUp();
 	void updatePowerUp(std::vector<GameObject*> balls);
 	void start_timer();
-	bool hasCollided = false;
+	bool hasCollided = false;*/
 private:
-	Uint32 startTime;
+	/*Uint32 startTime;
 	Uint32 runningTime;
 	Uint32 spawnDelay = 1000;
 	
@@ -23,8 +25,8 @@ private:
 	bool hasSpawned = false;
 	
 	void despawnPowerUp();
-	void collision_detection(std::vector<GameObject*> balls);
-	void set_width_height(int w, int h);
+	void collision_detection(std::vector<GameObject*> balls);*/
+	
 };
 
 #endif

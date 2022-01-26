@@ -11,6 +11,7 @@ public:
     //  Destructor
     //~GameObject();
     void set_y_position(int y);
+    void set_x_position(int x);
     void set_rect(int x,int y);
     void render();
     int width = NULL;

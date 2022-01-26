@@ -23,18 +23,31 @@
 }*/
 void MyGame::on_receive(std::string cmd, std::vector<std::string>& args) {
     if (cmd == "GAME_DATA") {
-        if (args.size() == (2+(game_data.numBalls*2))) {
-            game_data.player1Y = stoi(args.at(0));
-            game_data.player2Y = stoi(args.at(1));
+        game_data.numBalls = stoi(args.at(0));
+        if (args.size() == (3+(game_data.numBalls*2))) {
+            game_data.player1Y = stoi(args.at(1));
+            game_data.player2Y = stoi(args.at(2));
+            int it2 = 0;
             for (int it = 0; it < game_data.numBalls; it++) {
-                game_data.ballsPos[it][0] = stoi(args.at(it + 2));
-                game_data.ballsPos[it][1] = stoi(args.at(it + 3));
+                if (it != 0) {
+                    it2 += 2;
+                }
+                game_data.ballsPosX[it] = stoi(args.at(it2 + 3));
+                game_data.ballsPosY[it] = stoi(args.at(it2 + 4));
             }
         }
     }
     else if (cmd == "PLAYERNUM") {
         if (clientID == 0) {
             clientID = stoi(args.at(0));
+        }
+    }
+    else if (cmd == "POWER_UP") {
+        if (args.size() == 3) {
+            game_data.powerUpX = stoi(args.at(0));
+            game_data.powerUpY = stoi(args.at(1));
+            game_data.powerUpNum = stoi(args.at(2));
+            std::cout << game_data.powerUpNum << std::endl;
         }
     } else {
         std::cout << "Received: " << cmd << std::endl;
@@ -46,6 +59,7 @@ void MyGame::send(std::string message) {
 }
 
 void MyGame::load_media(SDL_Renderer* renderer) {
+    rend = renderer;
     textureLoader = new TextureLoader();
     backgroundTexture = textureLoader->load_texture(renderer, "../src/Assets/Images/PongBackground.bmp");
     if (backgroundTexture == nullptr) {
@@ -53,27 +67,36 @@ void MyGame::load_media(SDL_Renderer* renderer) {
     }
     player1 = new Player(renderer, "../src/Assets/Images/PongBat.bmp", false);
     player2 = new Player(renderer, "../src/Assets/Images/PongBat.bmp", true);
-    ball = new Ball(renderer, "../src/Assets/Images/Ball.bmp");
-    game_data.balls.push_back(ball);
-    ball = new Ball(renderer, "../src/Assets/Images/Ball.bmp");
-    game_data.balls.push_back(ball);
+    powerUp = new PowerUp(rend, "");
+    game_data.powerUpNum = 4;
+    send("NO_POWERUP");
     srand((unsigned)time(0));
-    doubleBall = new DoubleBall(renderer, "../src/Assets/Images/DoubleBallPowerUp.png");
-    plusOneBall = new PlusOneBall(renderer, "../src/Assets/Images/PlusOneBallPowerUp.png");
     //fontLoader = new FontLoader();
     //scoreFont = fontLoader->load_font("../src/Assets/Fonts/Gameplay.ttf",10);
 
+}
+void MyGame::spawn_ball(SDL_Renderer* renderer) {
+    ball = new Ball(renderer, "../src/Assets/Images/Ball.bmp");
+    game_data.balls.push_back(ball);
+    auto it = std::find(game_data.balls.begin(), game_data.balls.end(), ball);
+    int index = 0;
+    if (it != game_data.balls.end())
+    {
+        index = it - game_data.balls.begin();
+    }
+    else {
+        std::cout << "-1" << std::endl;
+    }
+    game_data.balls[index]->set_rect(0, 0);
+}
+void MyGame::despawn_ball() {
+    game_data.balls.pop_back();
 }
 
 
 void MyGame::create_game_objects() {
     player1->set_rect((windowW / 4), 0);
     player2->set_rect(((windowW / 4) * 3) - 20, 0);
-
-    game_data.balls[0]->set_rect(0,0);
-
-    doubleBall->start_timer();
-    plusOneBall->start_timer();
 }
 
 void MyGame::input(SDL_Event& event) {
@@ -107,20 +130,43 @@ void MyGame::input(SDL_Event& event) {
         break;
     }
 }
-
+void MyGame::choose_power_up() {
+    if (game_data.powerUpNum == 0) {
+        spawn_power_up("../src/Assets/Images/MinusOneBallPowerUp.png");
+    }
+    else if (game_data.powerUpNum == 1) {
+        spawn_power_up("../src/Assets/Images/PlusOneBallPowerUp.png");
+    }
+    else if (game_data.powerUpNum == 2) {
+        spawn_power_up("../src/Assets/Images/HalfBallPowerUp.png");
+    }
+    else if (game_data.powerUpNum == 3) {
+        spawn_power_up("../src/Assets/Images/DoubleBallPowerUp.png");
+    }
+    else {
+        powerUp->set_width_height(0, 0);
+        powerUp->set_rect(0, 0);
+        std::cout << "delete powerUp" << std::endl;
+    }
+}
+void MyGame::spawn_power_up(std::string path) {
+    powerUp = new PowerUp(rend, path);
+    powerUp->set_rect(game_data.powerUpX, game_data.powerUpY);
+}
 void MyGame::update() {
     player1->set_y_position(game_data.player1Y);
     player2->set_y_position(game_data.player2Y);
-    
-    std::vector<GameObject*> gameObjects;
-
+    if (game_data.numBalls > game_data.balls.size()){
+        spawn_ball(rend);
+    } else if (game_data.numBalls < game_data.balls.size()){
+        despawn_ball();
+    }
     for (int it = 0; it < game_data.balls.size() ; ++it) {
-        game_data.balls[it]->set_y_position(game_data.ballsPos[it][1]);
-        game_data.balls[it]->set_x_position(game_data.ballsPos[it][0]);
-        gameObjects.push_back(game_data.balls[it]);
+        game_data.balls[it]->set_y_position(game_data.ballsPosY[it]);
+        game_data.balls[it]->set_x_position(game_data.ballsPosX[it]);
+        
     };
-    doubleBall->updatePowerUp(gameObjects);
-    plusOneBall->update(gameObjects);
+       choose_power_up();
 }
 
 void MyGame::render(SDL_Renderer* renderer) {
@@ -138,8 +184,8 @@ void MyGame::render(SDL_Renderer* renderer) {
     for (int it = 0; it < game_data.balls.size(); it++) {
         game_data.balls[it]->render();
     }
-    doubleBall->render();
-    plusOneBall->render();
+        powerUp->render();
+    
 }
 
 /*void MyGame::play_sound() {

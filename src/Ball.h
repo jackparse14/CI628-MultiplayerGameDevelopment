@@ -9,7 +9,7 @@ public:
 		width = 10;
 		height = 10;
 	};
-	void set_x_position(int x);
+	//void set_x_position(int x);
 	
 };
 

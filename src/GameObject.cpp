@@ -12,6 +12,10 @@ void GameObject::set_y_position(int y) {
 	yPosition = y;
 	rect.y = yPosition;
 }
+void GameObject::set_x_position(int x) {
+	xPosition = x;
+	rect.x = xPosition;
+}
 void GameObject::set_rect(int x, int y) {
 	xPosition = x;
 	yPosition = y;

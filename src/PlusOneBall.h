@@ -1,4 +1,4 @@
-#ifndef __PLUS_ONE_BALL__	// To make sure you don't declare the function more than once by including the header multiple times.
+/*#ifndef __PLUS_ONE_BALL__	// To make sure you don't declare the function more than once by including the header multiple times.
 #define __PLUS_ONE_BALL__
 
 #include "PowerUp.h"
@@ -10,4 +10,4 @@ public:
 	void update(std::vector<GameObject*>& balls);
 };
 
-#endif
+#endif*/

@@ -1,12 +1,12 @@
 #include "PowerUp.h"
 #include <iostream>
 
-void PowerUp::start_timer() {
+/*void PowerUp::start_timer() {
 	startTime = SDL_GetTicks();
 }
 
 void PowerUp::updatePowerUp(std::vector<GameObject*> balls) {
-	runningTime = SDL_GetTicks() - startTime;
+	/*runningTime = SDL_GetTicks() - startTime;
 	if (runningTime > spawnDelay && hasSpawned == false) {
 		set_width_height(45,45);
 		spawnPowerUp();
@@ -41,7 +41,7 @@ void PowerUp::spawnPowerUp() {
 
 int PowerUp::randomNumberGen(int min,int max) {
 	return (rand() % (max - min) + min);
-}
+}*/
 void PowerUp::set_width_height(int w,int h) {
 	width = w;
 	height = h;
