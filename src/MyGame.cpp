@@ -162,12 +162,12 @@ void MyGame::input(SDL_Event& event) {
     switch (event.key.keysym.sym) {
     case SDLK_w:
         if (clientID == 1) {
-            player1->set_y_position(player1->get_y_position()+1);
+            player1->set_y_position(player1->get_y_position()-10);
             send(event.type == SDL_KEYDOWN ? "W_DOWN" : "W_UP");
             break;
         }
         else if (clientID == 2) {
-            player2->set_y_position(player2->get_y_position() + 1);
+            player2->set_y_position(player2->get_y_position() -10);
             send(event.type == SDL_KEYDOWN ? "I_DOWN" : "I_UP");
             break;
         }
@@ -176,12 +176,12 @@ void MyGame::input(SDL_Event& event) {
         }
     case SDLK_s:
         if (clientID == 1) {
-            player1->set_y_position(player1->get_y_position() - 1);
+            player1->set_y_position(player1->get_y_position() + 10);
             send(event.type == SDL_KEYDOWN ? "S_DOWN" : "S_UP");
             break;
         }
         else if (clientID == 2) {
-            player2->set_y_position(player2->get_y_position() - 1);
+            player2->set_y_position(player2->get_y_position() + 10);
             send(event.type == SDL_KEYDOWN ? "K_DOWN" : "K_UP");
         break;
         }
