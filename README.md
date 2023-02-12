@@ -1,3 +1,5 @@
+See https://github.com/jackparse14/CI628-MultiplayerGameDevelopment-server for the server side program with this project
+
 # CI628-PongClient
 A simple multiplayer pong client in C++.
 
